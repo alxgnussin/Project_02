@@ -1,0 +1,39 @@
+{% extends 'base.html' %}
+{% block container %}
+  <main class="container mt-3">
+    <div class="card my-4 mx-auto">
+      <div class="card-body m-2 m-md-4">
+        <article class="row">
+          <div class="col-5"><img src="{{dic['picture']}}" class="img-fluid" alt=""></div>
+          <div class="col-7">
+
+            <section class="teacher=info">
+
+              <h1 class="h2">{{dic['name']}}</h1>
+              <p><span class="badge badge-secondary mr-2">{% for goal in goals %}{{goal}} {% endfor %} </span>Рейтинг: {{dic['rating']}} Ставка: {{dic['price']}} / час</p>
+              <p>{{dic['about']}}</p>
+
+            </section>
+
+            <section class="available">
+
+              <h4 class="mb-4 mt-5">Записаться на пробный урок</h4>
+              {% for key, data in sked.items() %}
+                <h6 class="mt-4">{{data['name']}}</h6>
+                {% if data['times']|length > 0 %}
+                  {% for time in data['times'] %}
+                    <a href="/booking/{{dic['id']}}/{{key}}/{{time|urlencode}}/" class="btn btn-outline-success mr-2 mb-1" style="width: 150px;">{{time}} свободно</a>
+                  {% endfor %}
+                {% else %}
+                  <p>Нет свободных уроков</p>
+                {% endif %}
+              {% endfor %}
+            </section>
+
+          </div>
+        </article>
+      </div>
+
+    </div>
+  </main>
+{% endblock %}

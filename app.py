@@ -1,0 +1,112 @@
+# -*- coding: utf-8 -*-
+# Python 3.7.7 required
+from flask import Flask, render_template, request
+from operations import select_profile, select_goals, schedule, week_days, append_json_data
+from operations import goals, teachers, week_time, random_generator
+
+app = Flask(__name__)
+app.secret_key = 'Y&blNBvsINyA5irX^OwZ*RkbWQSnT~pM'
+
+
+@app.route("/")
+def render_index():
+    random_teachers = []
+    for i in random_generator():
+        random_teachers.append(select_profile('id', i))
+    output = render_template(
+        'index.html',
+        goal=goals(),
+        random_teachers=random_teachers
+    )
+    return output
+
+
+@app.route("/goals/<goal>/")
+def render_goals(goal):
+    goal_teachers = []
+    for dic in teachers():
+        if goal in dic['goals']:
+            goal_teachers.append(dic)
+    output = render_template(
+        'goal.html',
+        goal=goals()[goal].lower(),
+        goal_teachers=goal_teachers
+    )
+    return output
+
+
+@app.route("/profiles/<trainer_id>/")
+def render_profiles(trainer_id):
+    profile = select_profile('id', int(trainer_id))
+    teachers_goals = select_goals(profile['goals'])
+    free = schedule(profile['free'])
+    output = render_template(
+        'profile.html',
+        dic=profile,
+        goals=teachers_goals,
+        sked=free
+    )
+    return output
+
+
+@app.route("/request/")
+def render_request():
+    return render_template('request.html', goal=goals(), time=week_time())
+
+
+@app.route("/request_done/", methods=['POST'])
+def render_request_done():
+    radio_goal = request.form.get('goal')
+    radio_time = request.form.get('time')
+    client_name = request.form.get('clientName')
+    phone = request.form.get('clientPhone')
+    if client_name and phone:
+        new_record = {
+            'clientName': client_name,
+            'clientPhone': phone,
+            'clientGoal': radio_goal,
+            'clientTime': radio_time
+        }
+        append_json_data('request.json', new_record)
+        return render_template('request_done.html', goal=goals()[radio_goal], time=radio_time, name=client_name, phone=phone)
+    else:
+        return render_request()
+
+
+@app.route("/booking/<trainer_id>/<day>/<lesson_time>/")
+def render_booking(trainer_id, day, lesson_time):
+    output = render_template(
+        'booking.html',
+        teacher_name=select_profile('id', int(trainer_id))['name'],
+        picture=select_profile('id', int(trainer_id))['picture'],
+        id=trainer_id,
+        day=day,
+        day_ru=week_days()[day],
+        lesson_time=lesson_time
+    )
+    return output
+
+
+@app.route("/booking_done/", methods=['POST'])
+def render_booking_done():
+    trainer_id = request.form.get('clientTeacher')
+    day = request.form.get('clientWeekday')
+    lesson_time = request.form.get('clientTime')
+    client_name = request.form.get('clientName')
+    phone = request.form.get('clientPhone')
+    if client_name and phone:
+        new_record = {
+            'clientName': client_name,
+            'clientPhone': phone,
+            'clientTeacher': trainer_id,
+            'clientWeekday': day,
+            'clientTime': lesson_time
+        }
+        append_json_data('booking.json', new_record)
+        return render_template('booking_done.html', day=day, time=lesson_time, name=client_name, phone=phone)
+    else:
+        return render_booking(trainer_id, day, lesson_time)
+
+
+if __name__ == '__main__':
+    app.run(debug=True)
