@@ -3,7 +3,7 @@
 
 import json
 import os.path
-from random import randint
+from random import sample
 
 
 def is_exist(file):
@@ -24,7 +24,7 @@ def append_json_data(file, record):
         with open(file, 'w', encoding='utf8') as f:
             f.write(content)
     else:
-        content = json.dumps([record])
+        content = json.dumps([record], ensure_ascii=False)
         with open(file, 'w', encoding='utf8') as f:
             f.write(content)
 
@@ -61,14 +61,7 @@ def schedule(data):
 
 
 def random_generator():
-    keys = []
-    while len(keys) < 6:
-        key = randint(0, len(teachers()) - 1)
-        if key in keys:
-            continue
-        else:
-            keys.append(key)
-    return keys
+    return sample(range(len(teachers()) - 1), 6)
 
 
 def week_days():

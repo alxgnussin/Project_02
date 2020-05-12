@@ -1,8 +1,9 @@
 # -*- coding: utf-8 -*-
 # Python 3.7.7 required
 from flask import Flask, render_template, request
-from operations import select_profile, select_goals, schedule, week_days, append_json_data
+
 from operations import goals, teachers, week_time, random_generator
+from operations import select_profile, select_goals, schedule, week_days, append_json_data
 
 app = Flask(__name__)
 app.secret_key = 'Y&blNBvsINyA5irX^OwZ*RkbWQSnT~pM'
@@ -13,12 +14,11 @@ def render_index():
     random_teachers = []
     for i in random_generator():
         random_teachers.append(select_profile('id', i))
-    output = render_template(
+    return render_template(
         'index.html',
         goal=goals(),
         random_teachers=random_teachers
     )
-    return output
 
 
 @app.route("/goals/<goal>/")
@@ -27,12 +27,11 @@ def render_goals(goal):
     for dic in teachers():
         if goal in dic['goals']:
             goal_teachers.append(dic)
-    output = render_template(
+    return render_template(
         'goal.html',
         goal=goals()[goal].lower(),
         goal_teachers=goal_teachers
     )
-    return output
 
 
 @app.route("/profiles/<trainer_id>/")
@@ -40,13 +39,12 @@ def render_profiles(trainer_id):
     profile = select_profile('id', int(trainer_id))
     teachers_goals = select_goals(profile['goals'])
     free = schedule(profile['free'])
-    output = render_template(
+    return render_template(
         'profile.html',
         dic=profile,
         goals=teachers_goals,
         sked=free
     )
-    return output
 
 
 @app.route("/request/")
@@ -68,23 +66,24 @@ def render_request_done():
             'clientTime': radio_time
         }
         append_json_data('request.json', new_record)
-        return render_template('request_done.html', goal=goals()[radio_goal], time=radio_time, name=client_name, phone=phone)
+        return render_template('request_done.html', goal=goals()[radio_goal], time=radio_time, name=client_name,
+                               phone=phone)
     else:
         return render_request()
 
 
 @app.route("/booking/<trainer_id>/<day>/<lesson_time>/")
 def render_booking(trainer_id, day, lesson_time):
-    output = render_template(
+    teacher = select_profile('id', int(trainer_id))
+    return render_template(
         'booking.html',
-        teacher_name=select_profile('id', int(trainer_id))['name'],
-        picture=select_profile('id', int(trainer_id))['picture'],
+        teacher_name=teacher['name'],
+        picture=teacher['picture'],
         id=trainer_id,
         day=day,
         day_ru=week_days()[day],
         lesson_time=lesson_time
     )
-    return output
 
 
 @app.route("/booking_done/", methods=['POST'])
