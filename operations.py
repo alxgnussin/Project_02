@@ -71,5 +71,5 @@ def week_days():
 
 
 def week_time():
-    dic = {"time1": "1-2", "time2": "3-5", "time3": "5-7", "time4": "7-10"}
+    dic = {'time1': '1-2', 'time2': '3-5', 'time3': '5-7', 'time4': '7-10'}
     return dic

@@ -9,7 +9,7 @@ app = Flask(__name__)
 app.secret_key = 'Y&blNBvsINyA5irX^OwZ*RkbWQSnT~pM'
 
 
-@app.route("/")
+@app.route('/')
 def render_index():
     random_teachers = []
     for i in random_generator():
@@ -21,7 +21,7 @@ def render_index():
     )
 
 
-@app.route("/goals/<goal>/")
+@app.route('/goals/<goal>/')
 def render_goals(goal):
     goal_teachers = []
     for dic in teachers():
@@ -34,7 +34,7 @@ def render_goals(goal):
     )
 
 
-@app.route("/profiles/<trainer_id>/")
+@app.route('/profiles/<trainer_id>/')
 def render_profiles(trainer_id):
     profile = select_profile('id', int(trainer_id))
     teachers_goals = select_goals(profile['goals'])
@@ -47,12 +47,12 @@ def render_profiles(trainer_id):
     )
 
 
-@app.route("/request/")
+@app.route('/request/')
 def render_request():
     return render_template('request.html', goal=goals(), time=week_time())
 
 
-@app.route("/request_done/", methods=['POST'])
+@app.route('/request_done/', methods=['POST'])
 def render_request_done():
     radio_goal = request.form.get('goal')
     radio_time = request.form.get('time')
@@ -72,7 +72,7 @@ def render_request_done():
         return render_request()
 
 
-@app.route("/booking/<trainer_id>/<day>/<lesson_time>/")
+@app.route('/booking/<trainer_id>/<day>/<lesson_time>/')
 def render_booking(trainer_id, day, lesson_time):
     teacher = select_profile('id', int(trainer_id))
     return render_template(
@@ -86,7 +86,7 @@ def render_booking(trainer_id, day, lesson_time):
     )
 
 
-@app.route("/booking_done/", methods=['POST'])
+@app.route('/booking_done/', methods=['POST'])
 def render_booking_done():
     trainer_id = request.form.get('clientTeacher')
     day = request.form.get('clientWeekday')
