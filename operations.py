@@ -60,7 +60,7 @@ def schedule(data):
     return timetable
 
 
-def random_generator():
+def teachers_generator():
     return sample(range(len(teachers()) - 1), 6)
 
 
