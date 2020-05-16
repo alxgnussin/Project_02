@@ -102,7 +102,7 @@ def render_booking_done():
             'clientTime': lesson_time
         }
         append_json_data('booking.json', new_record)
-        return render_template('booking_done.html', day=day, time=lesson_time, name=client_name, phone=phone)
+        return render_template('booking_done.html', day=week_days()[day], time=lesson_time, name=client_name, phone=phone)
     else:
         return render_booking(trainer_id, day, lesson_time)
 
