@@ -2,7 +2,7 @@
 # Python 3.7.7 required
 from flask import Flask, render_template, request
 
-from operations import goals, teachers, week_time, teachers_generator
+from operations import goals, teachers, week_time, teachers_id_random_list
 from operations import select_profile, select_goals, schedule, week_days, append_json_data
 
 app = Flask(__name__)
@@ -11,13 +11,13 @@ app.secret_key = 'Y&blNBvsINyA5irX^OwZ*RkbWQSnT~pM'
 
 @app.route('/')
 def render_index():
-    random_teachers = []
-    for i in teachers_generator():
-        random_teachers.append(select_profile('id', i))
+    teachers_profile_list = []
+    for i in teachers_id_random_list():
+        teachers_profile_list.append(select_profile('id', i))
     return render_template(
         'index.html',
         goal=goals(),
-        random_teachers=random_teachers
+        random_teachers=teachers_profile_list
     )
 
 

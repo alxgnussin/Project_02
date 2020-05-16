@@ -60,16 +60,14 @@ def schedule(data):
     return timetable
 
 
-def teachers_generator():
+def teachers_id_random_list():
     return sample(range(len(teachers()) - 1), 6)
 
 
 def week_days():
-    dic = {'mon': 'Понедельник', 'tue': 'Вторник', 'wed': 'Среда', 'thu': 'Четверг', 'fri': 'Пятница',
-           'sat': 'Суббота', 'sun': 'Воскресение'}
-    return dic
+    return {'mon': 'Понедельник', 'tue': 'Вторник', 'wed': 'Среда', 'thu': 'Четверг', 'fri': 'Пятница',
+            'sat': 'Суббота', 'sun': 'Воскресение'}
 
 
 def week_time():
-    dic = {'time1': '1-2', 'time2': '3-5', 'time3': '5-7', 'time4': '7-10'}
-    return dic
+    return {'time1': '1-2', 'time2': '3-5', 'time3': '5-7', 'time4': '7-10'}
